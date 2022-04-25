@@ -2,6 +2,7 @@
 import './App.css';
 import { Component } from 'react'
 import { CardList } from './components/card-list/card-list.component';
+import { SearchBox } from './components/search-box/search-box.component';
 
 
 ///////1. using function for app
@@ -54,27 +55,37 @@ import { CardList } from './components/card-list/card-list.component';
 // }
 
 
-//3. creating superhero app
+//3. creating monsters app
 class App extends Component{
   constructor(){
     super();
     this.state = {
-      superHero:[]
+      monsters:[],
+      searchField :''
     }
   }
 
   async componentDidMount(){
     const users = await (await fetch('https://jsonplaceholder.typicode.com/users')).json()
-    this.setState({superHero:users})
+    this.setState({monsters:users})
     // console.log(users)
     // .then(response => response.json())
     // .then(data=>console.log(data))
   }
 
   render(){
+    const {monsters , searchField} = this.state
+    const filteredMonsters = monsters.filter(monster=>{
+      return monster.name.toLowerCase().includes(searchField.toLowerCase())
+    })
+
     return(
     <div className="App">
-     <CardList monsters = {this.state.superHero} />
+      <h1 className='heading'>
+        Monster rolodex
+      </h1>
+      <SearchBox placeholder={'search monster'} handler = {text=>this.setState({searchField:text.target.value})} />
+     <CardList monsters = {filteredMonsters} />
     </div>
     )    
   }
